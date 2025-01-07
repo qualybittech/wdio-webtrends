@@ -13,6 +13,7 @@
   },
   "scripts": {
     "wdio": " wdio run ./wdio.conf.ts --cucumberOpts.tags",
+    "wdio:all": " wdio run ./wdio.conf.ts",
     "wdio:docker": "wdio run test/wdio.docker.conf.ts --cucumberOpts.tags"
   }
 }

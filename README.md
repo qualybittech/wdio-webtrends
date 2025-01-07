@@ -20,7 +20,7 @@ npm run wdio
 * 3) Java  
 
 * To execute all the automated tests execute using command :
-*   npm run wdio
+*   npm run wdio:all
 
 * To execute specific scenario or tag use :
 *   npm run wdio "@test"
