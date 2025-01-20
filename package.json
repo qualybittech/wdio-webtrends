@@ -8,6 +8,7 @@
     "@wdio/spec-reporter": "^8.18.1",
     "multiple-cucumber-html-reporter": "^3.5.0",
     "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.2.2",
     "wdio-cucumberjs-json-reporter": "^5.1.7"
   },

@@ -15,6 +15,11 @@ When(/^I login with webtrends (.*), (.*), (.*)/, async (email, password,type) =>
     await WebTrendsLoginPage.webtrendsLogin(email, password,type);
 });
 
+When('I click on "Sign in with SSO"', async () => {
+    await WebTrendsLoginPage.clickSSOButton();
+});
+
+
 Then(/^I should see username logged in (.*)/, async (username) => {
     await expect(WebTrendsHomePage.loggedInUser(username)).toBeExisting();
 });
@@ -23,7 +28,7 @@ Then('Logout from application',async() =>{
     await WebTrendsHomePage.webtrendsLogout();
 })
 
-Then('I should not able to login',async() =>{
+Then('I should not be able to login',async() =>{
     await expect(webtrendsLoginPage.invalidLoginErrorMsg()).toBeExisting();
 })
 
@@ -34,3 +39,36 @@ Then(/^I Navigate to (.*)/,async(menuname) =>{
 Then(/^I check for forgetpassword (.*)/,async(email) =>{
     await webtrendsForgetpasswordPage.webtrendsForgetPassword(email);
 })
+
+When('I click on the Forgot password link', async () => {
+    await WebTrendsLoginPage.clickForgotPasswordLink();
+});
+
+When(/^I will enter my email address (.*)$/, async (email) => {
+    await WebTrendsLoginPage.enterEmailaddress(email);
+});
+
+When('I will click on the Request reset link', async () => {
+    await WebTrendsLoginPage.clickRequestresetLink();
+});
+
+Then('I should see a confirmation message for the reset link', async () => {
+    await WebTrendsLoginPage.VerifyforgotPasswordDisplayed();
+});
+
+
+Then('I check dashboard page contents', async () => {
+    await WebTrendsHomePage.VerifyDashboardDisplayed();
+});
+
+Then('I click create menu and verify', async () => {
+    await WebTrendsHomePage.NavigateCreateMenuAndVerify();
+});
+
+Then('I click experiences menu and verify', async () => {
+    await WebTrendsHomePage.NavigateExperiencesMenuAndVerify();
+});
+
+Then('I click configure menu page and verify', async () => {
+    await WebTrendsHomePage.NavigateConfigureMenusAndVerify();
+});

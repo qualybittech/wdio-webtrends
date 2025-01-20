@@ -47,6 +47,16 @@ class WebTrendsLoginPage extends Page {
     public invalidLoginErrorMsg () {
         return $('//label[contains(text(),"Incorrect email or password")]');
     }
+    get forgetPasswordLink() {
+        return $('//a[@class="password-recovery"]');
+    }
+    get enterEmailaddressforgotpassword() {
+        return $('//*[@id="emailInput"]');
+    }
+    get requestResetLink() {
+        return $('//button[@class="submit-button btn btn-default"]');
+    }
+    
     
     /**
      * a method to encapsule automation code to interact with the page
@@ -75,6 +85,27 @@ class WebTrendsLoginPage extends Page {
             await browser.pause(2000);
         }
     }
+    async clickForgotPasswordLink() {
+        await this.forgetPasswordLink.click();
+    }
+
+    async enterEmailaddress(email) {
+        await this.enterEmailaddressforgotpassword.setValue(email.trim());
+    }
+    
+    async clickRequestresetLink() {
+        await this.requestResetLink.click();
+    }
+    
+    async VerifyforgotPasswordDisplayed() {
+        await expect(this.enterEmailaddressforgotpassword).toBeExisting();
+        await expect(this.requestResetLink).toBeDisplayed();
+    }
+
+    async clickSSOButton() {
+        await this.ssoButton.click();
+    }
+
 }
 
 export default new WebTrendsLoginPage();
