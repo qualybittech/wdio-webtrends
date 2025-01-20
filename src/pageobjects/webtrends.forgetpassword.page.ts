@@ -22,7 +22,5 @@ class WebTrendsForgetPasswordPage extends Page {
             await this.email.setValue(email);
             await this.requestButton.click();
     }
-
 }
-
 export default new WebTrendsForgetPasswordPage();
