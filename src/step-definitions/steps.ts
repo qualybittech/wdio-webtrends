@@ -5,6 +5,7 @@ import WebTrendsLoginPage from '../pageobjects/webtrends.login.page.js';
 import WebTrendsHomePage from '../pageobjects/webtrends.home.page.js';
 import webtrendsLoginPage from '../pageobjects/webtrends.login.page.js';
 import webtrendsForgetpasswordPage from '../pageobjects/webtrends.forgetpassword.page.js';
+import webtrendsVerificationPage from '../pageobjects/webtrends.verification.page.js';
 
 Given('I am on the webtrends website home page', async () => {
     await WebTrendsLoginPage.appLaunch('/');
@@ -71,4 +72,8 @@ Then('I click experiences menu and verify', async () => {
 
 Then('I click configure menu page and verify', async () => {
     await WebTrendsHomePage.NavigateConfigureMenusAndVerify();
+});
+
+Then('I should see the verification code', async () => {
+    await webtrendsVerificationPage.webtrendsVerificationCode();
 });

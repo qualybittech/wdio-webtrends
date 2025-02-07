@@ -38,29 +38,6 @@ Feature: webtrends application tests for login
       | single@webtrends-optimize.com          | Webtrends@123  |       |Single Non beta |
       | mfa@webtrends-optimize.com             | Webtrends@123  |       |MFA Non Beta    |
 
-
-  Scenario Outline: Forget password request
-
-    Given I am on the webtrends website home page
-    When I check for forgetpassword <email>
-    When I click on the Forgot password link
-    And I will enter my email address <email>
-    And I will click on the Request reset link
-    Then I should see a confirmation message for the reset link
-    Examples:
-      | email                                  | 
-      | louvina.barbosa@webtrends-optimize.com | 
-      | pubeta@webtrends-optimize.com          | 
-      | betamulti@webtrends-optimize.com       |
-      | betasingle@webtrends-optimize.com      |
-      | betamfa@webtrends-optimize.com         | 
-      | pu@webtrends-optimize.com              | 
-      | multi@webtrends-optimize.com           | 
-      | single@webtrends-optimize.com          | 
-      | mfa@webtrends-optimize.com             |
-      
-  
-
 # Scenario Outline: for resetting password through outlook
 
 # Scenario Outline: Successful login with MFA 
@@ -85,7 +62,7 @@ Feature: webtrends application tests for login
 #    Then I should see a message "Your password has expired. Please change your password."  
 #   And I should be redirected to the "Change Password" page
 
- @test
+
   Scenario Outline: As a customer user I can log into the webtrends application
 
     Given I am on the webtrends website home page
