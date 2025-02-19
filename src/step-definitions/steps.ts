@@ -6,6 +6,7 @@ import WebTrendsHomePage from '../pageobjects/webtrends.home.page.js';
 import webtrendsLoginPage from '../pageobjects/webtrends.login.page.js';
 import webtrendsForgetpasswordPage from '../pageobjects/webtrends.forgetpassword.page.js';
 import webtrendsVerificationPage from '../pageobjects/webtrends.verification.page.js';
+import webtrendsMyaccountPage from '../pageobjects/webtrends.myaccount.page.js';
 
 Given('I am on the webtrends website home page', async () => {
     await WebTrendsLoginPage.appLaunch('/');
@@ -77,3 +78,15 @@ Then('I click configure menu page and verify', async () => {
 Then('I should see the verification code', async () => {
     await webtrendsVerificationPage.webtrendsVerificationCode();
 });
+
+Then('I check for navigation of my account options', async () => {
+    await webtrendsMyaccountPage.User();
+    await webtrendsMyaccountPage.AuditTrail();
+    await webtrendsMyaccountPage.OverView();
+    await webtrendsMyaccountPage.Roles();
+});
+
+Then('I check for navigation of help', async () => {
+    await WebTrendsHomePage.webtrendsHelp();
+});
+

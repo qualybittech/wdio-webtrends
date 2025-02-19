@@ -117,6 +117,14 @@ class WebTrendsHomePage extends Page {
         return $('//a[@href="/wam/api/logout"]');
     }
 
+    public get help() {
+        return $('//a[@class="navbar-help"]');
+    }
+
+    public get helpVerification() {
+        return $('//h1[text()="Welcome to the Webtrends Optimize help centre"]');
+    }
+
     public async navigateToMenu(menuname: string){
         return $('//button[contains(text(),"'+menuname+'")]').click();
     }
@@ -209,6 +217,15 @@ class WebTrendsHomePage extends Page {
         await this.automatedTrackingMenu.click();
         await browser.pause(1000);
         await expect(this.automatedTrackingPage).toBeDisplayed();
+    }
+
+    public async webtrendsHelp(){
+        await this.help.click();
+        const handles = await browser.getWindowHandles()
+        await browser.switchToWindow(handles[1])
+        await browser.pause(3000)
+        await expect(this.helpVerification).toBeDisplayed();
+
     }
     
 }

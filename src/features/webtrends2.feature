@@ -65,7 +65,7 @@ Scenario Outline: MFA
       | email                                  | password       | type  |   
       | richardeames123+mfa@gmail.com          |Corona2024!     |       |
 
-@check1
+@check
   Scenario Outline: As a customer user I can log into the webtrends application
 
     Given I am on the webtrends website home page
@@ -78,3 +78,16 @@ Scenario Outline: MFA
     Examples:
       | email                         | password       | type  |username   |
       | pubeta@webtrends-optimize.com | Webtrends@123  |       |Power Beta |
+
+@check
+  Scenario Outline: MyAccountOptions and help
+
+    Given I am on the webtrends website home page
+    When I login with webtrends <email>, <password>, <type>
+    Then I should see username logged in <username>
+    Then I check for navigation of my account options
+    And I check for navigation of help
+
+        Examples:
+      | email                                  | password       | type  |username        |
+      | pu@webtrends-optimize.com              | Webtrends@123  |       |Power Nonbeta   |
