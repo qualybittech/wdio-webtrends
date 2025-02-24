@@ -17,7 +17,7 @@ When(/^I login with webtrends (.*), (.*), (.*)/, async (email, password,type) =>
     await WebTrendsLoginPage.webtrendsLogin(email, password,type);
 });
 
-When('I click on "Sign in with SSO"', async () => {
+When('I click on Sign in with SSO', async () => {
     await WebTrendsLoginPage.clickSSOButton();
 });
 

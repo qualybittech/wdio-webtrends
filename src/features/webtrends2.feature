@@ -57,7 +57,7 @@ Feature: webtrends application tests for login
       | mfa@webtrends-optimize.com             |
 
 @check
-Scenario Outline: MFA
+Scenario Outline: Check for MFA login page
     Given I am on the webtrends website home page
     When I login with webtrends <email>, <password>, <type>
     And I should see the verification code 
@@ -91,6 +91,11 @@ Scenario Outline: MFA
         Examples:
       | email                                  | password       | type  |username        |
       | pu@webtrends-optimize.com              | Webtrends@123  |       |Power Nonbeta   |
+
+@check
+Scenario: Check for SSO login page
+    Given I am on the webtrends website home page
+    When I click on Sign in with SSO
 
 @check
   Scenario Outline: As a customer user I can switch accounts
