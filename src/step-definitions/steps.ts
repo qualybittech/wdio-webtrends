@@ -60,7 +60,7 @@ Then('I should see a confirmation message for the reset link', async () => {
 
 
 Then('I check dashboard page contents', async () => {
-    await WebTrendsHomePage.VerifyDashboardDisplayed();
+    await WebTrendsHomePage.verifyDashboardDisplayed();
 });
 
 Then('I click create menu and verify', async () => {
@@ -68,11 +68,11 @@ Then('I click create menu and verify', async () => {
 });
 
 Then('I click experiences menu and verify', async () => {
-    await WebTrendsHomePage.NavigateExperiencesMenuAndVerify();
+    await WebTrendsHomePage.navigateExperiencesMenuAndVerify();
 });
 
 Then('I click configure menu page and verify', async () => {
-    await WebTrendsHomePage.NavigateConfigureMenusAndVerify();
+    await WebTrendsHomePage.navigateConfigureMenusAndVerify();
 });
 
 Then('I should see the verification code', async () => {
@@ -87,6 +87,18 @@ Then('I check for navigation of my account options', async () => {
 });
 
 Then('I check for navigation of help', async () => {
-    await WebTrendsHomePage.webtrendsHelp();
+    await WebTrendsHomePage.navigateWebtrendsHelpVerify();
+});
+
+Then('I should check for Logo navigation', async () => {
+    await WebTrendsHomePage.navigateWebtrendsLogoVerify();
+});
+
+Then('I should check for Dashboard navigation', async () => {
+    await WebTrendsHomePage.navigateWebtrendsDashboardVerify();
+});
+
+When(/^I should check switch account (.*)$/, async (account) => {
+    await WebTrendsHomePage.switchAccount(account);
 });
 

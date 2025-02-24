@@ -128,7 +128,39 @@ class WebTrendsHomePage extends Page {
     public async navigateToMenu(menuname: string){
         return $('//button[contains(text(),"'+menuname+'")]').click();
     }
-    
+
+    public get dashboardheading() {
+        return $('//p[@class="dashboard_heading"]');
+    }
+
+    public get logo() {
+        return $('//img[@alt="Optimize Logo"]');
+    }
+
+    public get dashboardOption() {
+        return $('//ul[@class="navbar-links"]//a[@href="/optimize/dashboard"]');
+    }
+
+    public get CreateOption() {
+        return $('//a[normalize-space()="Create"]');
+    }
+
+    public AccountName(Account: string) {
+        return $('//p[text()="'+Account+'"]');
+    }
+
+    public SelectDropDownAccount(Account: string) {
+        return $('//a[text()="'+Account+'"]');
+    }
+
+    public get DropDownAccountInput() {
+        return $('//div[@class="client-search"]//input');
+    }
+
+    public get AccountDropDown() {
+        return $('//div[@class="client-dropdown  "]');
+    }
+  
     public async webtrendsLogout(){
         await this.loggedInUserInitial().click();
         await browser.pause(2000);
@@ -136,7 +168,7 @@ class WebTrendsHomePage extends Page {
         await browser.reloadSession();
     }
 
-    public async VerifyDashboardDisplayed(){
+    public async verifyDashboardDisplayed(){
         await browser.pause(4000);
         await expect(this.dashboard).toBeDisplayed();
     }
@@ -145,13 +177,13 @@ class WebTrendsHomePage extends Page {
         await browser.pause(1000);
         //await expect(this.createWebpage).toBeDisplayed();
     }
-    public async NavigateExperiencesMenuAndVerify(){
+    public async navigateExperiencesMenuAndVerify(){
         await this.experiencesMenu.click();
         await browser.pause(1000);
         await expect(this.experiencesWebpage).toBeDisplayed();
     }
 
-    public async NavigateConfigureMenusAndVerify(){
+    public async navigateConfigureMenusAndVerify(){
         await this.configureMenu.moveTo();
         await browser.pause(1000);
         await this.assetsMenu.click();
@@ -219,7 +251,7 @@ class WebTrendsHomePage extends Page {
         await expect(this.automatedTrackingPage).toBeDisplayed();
     }
 
-    public async webtrendsHelp(){
+    public async navigateWebtrendsHelpVerify(){
         await this.help.click();
         const handles = await browser.getWindowHandles()
         await browser.switchToWindow(handles[1])
@@ -227,7 +259,26 @@ class WebTrendsHomePage extends Page {
         await expect(this.helpVerification).toBeDisplayed();
 
     }
-    
+
+    public async navigateWebtrendsLogoVerify(){
+        await this.CreateOption.click();
+        await this.logo.click();
+        await expect(this.dashboardheading).toBeDisplayed();
+    }
+
+    public async navigateWebtrendsDashboardVerify(){
+        await this.CreateOption.click();
+        await this.dashboardOption.click();
+        await expect(this.dashboardheading).toBeDisplayed();
+    }
+
+    public async switchAccount(account: string){
+        await this.AccountDropDown.click();
+        await this.DropDownAccountInput.setValue(account);
+        await this.SelectDropDownAccount(account).click();
+        await expect(this.AccountName(account)).toBeDisplayed();
+    }
+
 }
 
 export default new WebTrendsHomePage();

@@ -12,18 +12,14 @@ let env = process.argv[6]
 switch (env) {
   case 'staging':
     baseUrl = 'https://app.webtrends-optimize.com/auth/login';
-    baseUrl = 'https://app.dev-webtrends-optimize.com/auth/login';
     break;
 
   case 'stagingalt':
-    baseUrl = 'https://app.webtrends-optimize.com/auth/login';
     baseUrl = 'https://app.dev-webtrends-optimize.com/auth/login';
-
     break;
 
   default:
     baseUrl = 'https://app.webtrends-optimize.com/auth/login';
-    baseUrl = 'https://app.dev-webtrends-optimize.com/auth/login';
     
     break;
 }

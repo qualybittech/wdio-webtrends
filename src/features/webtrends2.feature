@@ -66,7 +66,7 @@ Scenario Outline: MFA
       | richardeames123+mfa@gmail.com          |Corona2024!     |       |
 
 @check
-  Scenario Outline: As a customer user I can log into the webtrends application
+  Scenario Outline: As a customer user I navigate to different menu options
 
     Given I am on the webtrends website home page
     When I login with webtrends <email>, <password>, <type>
@@ -91,3 +91,17 @@ Scenario Outline: MFA
         Examples:
       | email                                  | password       | type  |username        |
       | pu@webtrends-optimize.com              | Webtrends@123  |       |Power Nonbeta   |
+
+@check
+  Scenario Outline: As a customer user I can switch accounts
+
+    Given I am on the webtrends website home page
+    When I login with webtrends <email>, <password>, <type>
+    Then I should see username logged in <username>
+    Then I should check for Logo navigation
+    Then I should check for Dashboard navigation
+    Then I should check switch account <account>
+    And Logout from application 
+    Examples:
+      | email                        | password       | type  |username        | account     |
+      | multi@webtrends-optimize.com | Webtrends@123  |       |Multi Nonbeta   | Optimize UI |
