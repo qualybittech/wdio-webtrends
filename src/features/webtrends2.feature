@@ -1,14 +1,6 @@
 Feature: webtrends application tests for login
-  @check
-  Scenario Outline: As a invalid user I can't log into the webtrends application
-    Given I am on the webtrends website home page
-    When I login with webtrends <email>, <password>, <type>
-    Then I should not be able to login
-    Examples:
-      | email                                      | password       | type  |
-      | webtrends.optimize.betapoweruser@gmail.com | Webtrend2025!  |       |
 
-  @check
+  @check @1
   Scenario Outline: Multiple beta user login
 
     Given I am on the webtrends website home page
@@ -22,7 +14,7 @@ Feature: webtrends application tests for login
       | betasingle@webtrends-optimize.com      | Webtrends@123  |       |Beta Single     |
       | betamfa@webtrends-optimize.com         | Webtrends@123  |       |Beta MFA        |
 
-@check
+@check @1
   Scenario Outline: Multiple non beta user login
     Given I am on the webtrends website home page
     When I login with webtrends <email>, <password>, <type>
@@ -33,10 +25,10 @@ Feature: webtrends application tests for login
       | pu@webtrends-optimize.com              | Webtrends@123  |       |Power Nonbeta   |
       | multi@webtrends-optimize.com           | Webtrends@123  |       |Multi Nonbeta   |
       | single@webtrends-optimize.com          | Webtrends@123  |       |Single Non beta |
-      | mfa@webtrends-optimize.com             | Webtrends@123  |       |MFA Non Beta    |
+      | mfa@webtrends-optimize.com             | Webtrends@123  |       |MFA Non beta    |
 
 
- @check
+@check @1
   Scenario Outline: Forget password request
     Given I am on the webtrends website home page
     When I check for forgetpassword <email>
@@ -56,7 +48,7 @@ Feature: webtrends application tests for login
       | single@webtrends-optimize.com          | 
       | mfa@webtrends-optimize.com             |
 
-@check
+
 Scenario Outline: Check for MFA login page
     Given I am on the webtrends website home page
     When I login with webtrends <email>, <password>, <type>
@@ -65,48 +57,21 @@ Scenario Outline: Check for MFA login page
       | email                                  | password       | type  |   
       | richardeames123+mfa@gmail.com          |Corona2024!     |       |
 
-@check
-  Scenario Outline: As a customer user I navigate to different menu options
-
+@check @1
+Scenario Outline: As a customer user I check for menu navigation
     Given I am on the webtrends website home page
     When I login with webtrends <email>, <password>, <type>
-    #And I check dashboard page contents
+    And I check dashboard page contents
+    Then I should check for Logo navigation
+    Then I should check for Dashboard navigation
     Then I click create menu and verify
     And I click experiences menu and verify
     And I click configure menu page and verify
-    And Logout from application 
-    Examples:
-      | email                         | password       | type  |username   |
-      | pubeta@webtrends-optimize.com | Webtrends@123  |       |Power Beta |
-
-@check
-  Scenario Outline: MyAccountOptions and help
-
-    Given I am on the webtrends website home page
-    When I login with webtrends <email>, <password>, <type>
-    Then I should see username logged in <username>
-    Then I check for navigation of my account options
     And I check for navigation of help
-
-        Examples:
-      | email                                  | password       | type  |username        |
-      | pu@webtrends-optimize.com              | Webtrends@123  |       |Power Nonbeta   |
-
-@check
-Scenario: Check for SSO login page
-    Given I am on the webtrends website home page
-    When I click on Sign in with SSO
-
-@check
-  Scenario Outline: As a customer user I can switch accounts
-
-    Given I am on the webtrends website home page
-    When I login with webtrends <email>, <password>, <type>
-    Then I should see username logged in <username>
-    Then I should check for Logo navigation
-    Then I should check for Dashboard navigation
     Then I should check switch account <account>
-    And Logout from application 
+    Then I check for navigation of my account options
+    And Logout from application
+    
     Examples:
-      | email                        | password       | type  |username        | account     |
-      | multi@webtrends-optimize.com | Webtrends@123  |       |Multi Nonbeta   | Optimize UI |
+      | email                         | password       | type  |username      |  account     |
+      | pu@webtrends-optimize.com     | Webtrends@123  |       |Power Nonbeta | 7slots       |

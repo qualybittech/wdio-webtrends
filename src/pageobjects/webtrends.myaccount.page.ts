@@ -11,19 +11,19 @@ class WebTrendsAccountPage extends Page {
     }
 
     public MyAccountUser() {
-        return $('//a[@href="https://app.dev-webtrends-optimize.com/optimize/account/users"]');
+        return $('//div[@class="user-submenu-content "]//a[normalize-space()="Users"]');
     }
 
     public MyAccountAuditTrail() {
-        return $('//a[normalize-space()="Audit Trail"]');
+        return $('//div[@class="user-submenu-content "]//a[normalize-space()="Audit Trail"]');
     }
 
     public MyAccountOverView() {
-        return $('//a[@href="https://app.dev-webtrends-optimize.com/optimize/account/overview"]');
+        return $('//div[@class="user-submenu-content "]//a[normalize-space()="Account Overview"]');
     }
 
     public MyAccountRoles() {
-        return $('//a[@href="https://app.dev-webtrends-optimize.com/optimize/account/roles"]');
+        return $('//div[@class="user-submenu-content "]//a[normalize-space()="Roles"]');
     }
 
     public MyAccountUserVerification() {

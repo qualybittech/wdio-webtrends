@@ -257,6 +257,7 @@ class WebTrendsHomePage extends Page {
         await browser.switchToWindow(handles[1])
         await browser.pause(3000)
         await expect(this.helpVerification).toBeDisplayed();
+        await browser.switchToWindow(handles[0])
 
     }
 
