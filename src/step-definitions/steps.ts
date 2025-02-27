@@ -86,7 +86,7 @@ Then('I check for navigation of my account options', async () => {
     await webtrendsMyaccountPage.Roles();
 });
 
-Then('I check for navigation of help', async () => {
+Then('I check for navigation of help and verify', async () => {
     await WebTrendsHomePage.navigateWebtrendsHelpVerify();
 });
 

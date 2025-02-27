@@ -58,7 +58,7 @@ Scenario Outline: Check for MFA login page
       | richardeames123+mfa@gmail.com          |Corona2024!     |       |
 
 @check @1
-Scenario Outline: As a customer user I check for menu navigation
+Scenario Outline: As a Power non beta user I navigate to different menu options and verify with Page headline
     Given I am on the webtrends website home page
     When I login with webtrends <email>, <password>, <type>
     And I check dashboard page contents
@@ -67,7 +67,7 @@ Scenario Outline: As a customer user I check for menu navigation
     Then I click create menu and verify
     And I click experiences menu and verify
     And I click configure menu page and verify
-    And I check for navigation of help
+    And I check for navigation of help and verify
     Then I should check switch account <account>
     Then I check for navigation of my account options
     And Logout from application
