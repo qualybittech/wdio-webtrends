@@ -10,6 +10,7 @@ import webtrendsMyaccountPage from '../pageobjects/webtrends.myaccount.page.js';
 import webtrendsDashboardPage from '../pageobjects/webtrends.dashboard.page.js';
 
 Given('I am on the webtrends website home page', async () => {
+    await browser.deleteCookies();
     await WebTrendsLoginPage.appLaunch('/');
     await browser.maximizeWindow();
 });
