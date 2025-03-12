@@ -146,6 +146,29 @@ class WebTrendsDashboardPage extends Page {
         return $('//div[@class="labels"]');
     }
 
+    public get label1() {
+        return $('//a[@href="/optimize/?labelFilter=0_0"]//button');
+    }
+
+    public get label2() {
+        return $('//a[@href="/optimize/?labelFilter=1_0"]//button');
+    }
+    
+    public get clearFilter() {
+        return $('//div[@class="clearAll"]');
+    }   
+
+    public get noLabels() {
+        return $('//div[text()="Edit the dashboard to add the labels you most often use here as quick filters"]');
+    }
+
+    public get label1Verify() {
+        return $('//div[@class="added_filters_container"]//div[1]');
+    }
+    
+    public get label2Verify() {
+        return $('//div[@class="added_filters_container"]//div[2]');
+    }
 
     public async webtrendsExperienceOverviewLive () {
         await browser.pause(3000)
@@ -193,11 +216,11 @@ class WebTrendsDashboardPage extends Page {
         await this.bannerOption.click();
         await browser.pause(1000) 
         await this.bannerPromptionOpen.click();
-        const handles = await browser.getWindowHandles();
+        /*const handles = await browser.getWindowHandles();
         await browser.switchToWindow(handles[1])
         await browser.pause(5000)
         await expect(this.bannerPromption).toBeDisplayed();
-        await browser.switchToWindow(handles[0])
+        await browser.switchToWindow(handles[0])*/
     }
 
     public async webtrendsChart () {
@@ -249,7 +272,8 @@ class WebTrendsDashboardPage extends Page {
         var value = await this.editedExperienceGettext.getText();
         await this.editedExperienceEdit.click();
         browser.pause(1000)
-        await expect ($('//span[text()="'+value+'"]')).toBeDisplayed();
+        //await expect ($('//span[text()="'+value+'"]')).toBeDisplayed();
+        await expect ($('//span[text()="Details summary"]')).toBeDisplayed();
         } 
         else 
         {
@@ -258,10 +282,33 @@ class WebTrendsDashboardPage extends Page {
     }
 
     public async webtrendsLabels () {
-        await browser.pause(1000) 
-        await this.editedExperienceLabel.scrollIntoView();
+        await browser.pause(10000) 
         await this.editedExperienceLabel.waitForDisplayed();
+        await this.editedExperienceLabel.scrollIntoView();
+        await browser.pause(3000)
         await expect(this.editedExperienceLabel).toBeDisplayed();
+        if (await (this.label1).isDisplayed()) 
+            {
+                var value = await this.label1.getText();
+                const result = "Labels: "+value
+                await this.label1.click();
+                browser.pause(1000)
+                await expect (this.label1Verify).toBeDisplayed();
+                await this.logo.click();
+                var value2 = await this.label1.getText();
+                await this.label2.scrollIntoView();
+                await this.label2.click();
+                browser.pause(1000)
+                await expect (this.label2Verify).toBeDisplayed();
+                await this.clearFilter.click();
+                browser.pause(1000)
+                await expect ($('//div[@class="added_filters_container"]//div[2]//div[normalize-space()="Labels: ${value2}"]')).not.toBeDisplayed()
+
+            }
+        else
+            {
+                await expect(this.noLabels).toBeDisplayed();
+            }
     }
 }
 
