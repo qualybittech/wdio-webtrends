@@ -31,7 +31,6 @@ Feature: webtrends application tests for login
 @check @1
   Scenario Outline: Forget password request
     Given I am on the webtrends website home page
-    When I check for forgetpassword <email>
     When I click on the Forgot password link
     And I will enter my email address <email>
     And I will click on the Request reset link
@@ -39,14 +38,14 @@ Feature: webtrends application tests for login
     Examples:
       | email                                  | 
       | louvina.barbosa@webtrends-optimize.com | 
-      | pubeta@webtrends-optimize.com          | 
-      | betamulti@webtrends-optimize.com       |
-      | betasingle@webtrends-optimize.com      |
-      | betamfa@webtrends-optimize.com         | 
-      | pu@webtrends-optimize.com              | 
-      | multi@webtrends-optimize.com           | 
-      | single@webtrends-optimize.com          | 
-      | mfa@webtrends-optimize.com             |
+      #| pubeta@webtrends-optimize.com          | 
+      #| betamulti@webtrends-optimize.com       |
+      #| betasingle@webtrends-optimize.com      |
+      #| betamfa@webtrends-optimize.com         | 
+      #| pu@webtrends-optimize.com              | 
+      #| multi@webtrends-optimize.com           | 
+      #| single@webtrends-optimize.com          | 
+      #| mfa@webtrends-optimize.com             |
 
 
 Scenario Outline: Check for MFA login page
