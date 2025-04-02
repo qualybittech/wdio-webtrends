@@ -6,27 +6,39 @@ class WebTrendsDashboardPage extends Page {
    
 
     public get experienceOverviewLive () {
-        return $('//div[@class="testState "][1]//p');
+        return $('//div[@class="testStates"]//div[1]//p');
     }
 
     public get experienceOverviewStaging () {
-        return $('//div[@class="testState "][2]//p');
+        return $('//div[@class="testStates"]//div[2]//p');
     }
 
     public get experienceOverviewPublished () {
-        return $('//div[@class="testState "][3]//p');
+        return $('//div[@class="testStates"]//div[3]//p');
     }
 
     public get experienceOverviewLiveButton () {
-        return $('//div[@class="testState "][1]');
+        return $('//div[@class="testStates"]//div[1]');
     }
 
+    public get experienceOverviewLiveEmpty () {
+        return $('//div[text()="live"]/parent::div');
+    }
+
+    public get experienceOverviewStagingEmpty () {
+        return $('//div[text()="staging"]/parent::div');
+    }
+
+    public get experienceOverviewPublishedEmpty () {
+        return $('//div[text()="published"]/parent::div');
+    }
+  
     public get experienceOverviewStagingButton () {
-        return $('//div[@class="testState "][2]');
+        return $('//div[@class="testStates"]//div[2]');
     }
 
     public get experienceOverviewPublishedButton () {
-        return $('//div[@class="testState "][3]');
+        return $('//div[@class="testStates"]//div[3]');
     }
 
     public get session() {
@@ -174,25 +186,49 @@ class WebTrendsDashboardPage extends Page {
         await browser.pause(3000)
         await this.experienceOverviewLive.waitForDisplayed();
         var value = await this.experienceOverviewLive.getText();
+        if(value == 0)
+        {
+            await expect (this.experienceOverviewLiveEmpty).toBeDisplayed();
+ 
+        }
+        else
+        {
         await this.experienceOverviewLiveButton.click();
         await expect ($('//div[text()="Live"]//div[text()="'+value+'"]')).toBeDisplayed();
-        await this.logo.click();           
+        await this.logo.click();  
+        }         
     }
 
     public async webtrendsExperienceOverviewStaging () {
         await this.experienceOverviewStaging.waitForDisplayed();
         var value = await this.experienceOverviewStaging.getText();
+        if(value == 0)
+        {
+            await expect (this.experienceOverviewStagingEmpty).toBeDisplayed();
+ 
+        }
+        else
+        {
         await this.experienceOverviewStagingButton.click();
         await expect ($('//div[text()="Staging"]//div[text()="'+value+'"]')).toBeDisplayed();
-        await this.logo.click();           
+        await this.logo.click();  
+        }         
     }
 
     public async webtrendsExperienceOverviewPublished () {
         await this.experienceOverviewPublished.waitForDisplayed();
         var value = await this.experienceOverviewPublished.getText();
+        if(value == 0)
+        {
+            await expect (this.experienceOverviewPublishedEmpty).toBeDisplayed();
+ 
+        }
+        else
+        {
         await this.experienceOverviewPublishedButton.click();
         await expect ($('//div[text()="Published"]//div[text()="'+value+'"]')).toBeDisplayed();
-        await this.logo.click();           
+        await this.logo.click();  
+        }                    
     }
 
     public async webtrendsSession () {
