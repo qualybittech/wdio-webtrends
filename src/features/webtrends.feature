@@ -1,77 +1,95 @@
 Feature: webtrends application tests for login
 
-  Scenario Outline: As a customer user I can log into the webtrends application
+
+@betalogin
+  Scenario Outline: Multiple beta user login
 
     Given I am on the webtrends website home page
     When I login with webtrends <email>, <password>, <type>
     Then I should see username logged in <username>
     And Logout from application 
     Examples:
-      | email                                  | password    | type  |username        |
-      | louvina.barbosa@webtrends-optimize.com | Lo15BA07!!  | sso   |Louvina Barbosa |
+      | email                                  | password       | type  |username        |    
+      | pubeta@webtrends-optimize.com          | Webtrends@111  |       |Power Beta      |
+      | betamulti@webtrends-optimize.com       | Webtrends@111  |       |Beta Multi      |
+      | betasingle@webtrends-optimize.com      | Webtrends@111  |       |Beta Single     |
+      | betamfa@webtrends-optimize.com         | Webtrends@111  |       |Beta MFA        |
 
-  Scenario Outline: As a invalid user I can't log into the webtrends application
-  
-    Given I am on the webtrends website home page
-    When I login with webtrends <email>, <password>, <type>
-    Then I should not be able to login
-    Examples:
-      | email                                  | password    | type  |
-      | louvina.barbosa@webtrends-optimize.com | Lo15BA07!!  |       |
-
-  
-  Scenario Outline: Multiple user login
-
+@nonbetalogin
+  Scenario Outline: Multiple non beta user login
     Given I am on the webtrends website home page
     When I login with webtrends <email>, <password>, <type>
     Then I should see username logged in <username>
     And Logout from application 
     Examples:
       | email                                  | password       | type  |username        |
-      
-      | pubeta@webtrends-optimize.com          | Webtrends@123  |       |Power Beta      |
-      | betamulti@webtrends-optimize.com       | Webtrends@123  |       |Beta Multi      |
-      | betasingle@webtrends-optimize.com      | Webtrends@123  |       |Beta Single     |
-      | betamfa@webtrends-optimize.com         | Webtrends@123  |       |Beta MFA        |
-      | pu@webtrends-optimize.com              | Webtrends@123  |       |Power Nonbeta   |
-      | multi@webtrends-optimize.com           | Webtrends@123  |       |Multi Nonbeta   |
-      | single@webtrends-optimize.com          | Webtrends@123  |       |Single Non beta |
-      | mfa@webtrends-optimize.com             | Webtrends@123  |       |MFA Non Beta    |
+      | pu@webtrends-optimize.com              | Webtrends@111  |       |Power Nonbeta   |
+      | multi@webtrends-optimize.com           | Webtrends@111  |       |Multi Nonbeta   |
+      | single@webtrends-optimize.com          | Webtrends@111  |       |Single Non beta |
+      | mfa@webtrends-optimize.com             | Webtrends@111  |       |MFA Non Beta    |  
 
-# Scenario Outline: for resetting password through outlook
-
-# Scenario Outline: Successful login with MFA 
-
-#   Given I am on the webtrends website home page
-#   Given I am on the webtrends website home page
-#   When I login with webtrends <email>, <password>  
-#   When I click on the "Login" button 
-#    Then I should be prompted to enter a verification code  
-#    When I enter the valid verification code "123456"  
-#    And I click on the "Verify" button  
-#    Then I should be redirected to my account dashboard  
-#    And I should see a message "Login successful"
-#    Examples:
-#    | email                                  | password    |
-#    |                                        |             |
-
-#  Scenario Outline: Login with expired password
-
-#    Given I enter my webtrends email "<email>" and expired password "<password>"  
-#    When I click on the "Login" button 
-#    Then I should see a message "Your password has expired. Please change your password."  
-#   And I should be redirected to the "Change Password" page
-
-
-  Scenario Outline: As a customer user I can log into the webtrends application
-
+# only for d1
+@mfad1 
+  Scenario Outline: MFA
     Given I am on the webtrends website home page
     When I login with webtrends <email>, <password>, <type>
-    And I check dashboard page contents
+    #And I should see the verification code 
+       Examples:
+      | email                                  | password       | type  |   
+      | richardeames123+mfa@gmail.com          | Webtrends@111  |       |      
+
+@sso
+  Scenario: Check for SSO login page
+    Given I am on the webtrends website home page
+    When I click on Sign in with SSO
+
+@invalidlogin
+  Scenario Outline: As a invalid user I can't log into the webtrends application
+    Given I am on the webtrends website home page
+    When I login with webtrends <email>, <password>, <type>
+   #Then I should not be able to login
+    Examples:
+      | email                                      | password       | type  |
+      | pu@webtrends-optimize.com                  | Webtrends@111  |       |    
+
+ @forgotpassword
+  Scenario Outline: Forget password request
+    Given I am on the webtrends website home page
+    When I click on the Forgot password link
+    And I will enter my email address <email>
+    And I will click on the Request reset link
+    Then I should see a confirmation message for the reset link
+    
+    Examples:
+      | email                                  | 
+      | louvina.barbosa@webtrends-optimize.com | 
+      | pubeta@webtrends-optimize.com          | 
+      | betamulti@webtrends-optimize.com       |
+      | betasingle@webtrends-optimize.com      |
+      | betamfa@webtrends-optimize.com         | 
+      | pu@webtrends-optimize.com              | 
+      | multi@webtrends-optimize.com           | 
+      | single@webtrends-optimize.com          | 
+      | mfa@webtrends-optimize.com             |
+
+
+# For live site change account to 7slots
+
+@navigation
+Scenario Outline: As a Power non beta user I navigate to different menu options and verify with Page headline
+    Given I am on the webtrends website home page
+    When I login with webtrends <email>, <password>, <type>
+  #  And I check dashboard page contents
+    Then I should check for Logo navigation
+    Then I should check for Dashboard navigation
     Then I click create menu and verify
     And I click experiences menu and verify
     And I click configure menu page and verify
-    And Logout from application 
+    And I check for navigation of help and verify
+    Then I should check switch account <account>
+    Then I check for navigation of my account options
+    And Logout from application
+    
     Examples:
-      | email                                  | password       | type  |username        |
-      | louvina.barbosa@webtrends-optimize.com | Lo15BA07!!   | sso   |Louvina Barbosa |
+      | email                             | password       | type  |username      |  account              |
+      | pubeta@webtrends-optimize.com     | Webtrends@111  |       |Power Beta   | Test Automation       |

@@ -42,6 +42,14 @@ class WebTrendsAccountPage extends Page {
         return $('//h1[normalize-space()="Account Roles"]');
     }
 
+    public MyAccountawardAndcertificates() {
+        return $('div.user-submenu-content a[href="/optimize/awards-and-certificates"]');
+    }
+
+    public MyAccountawardAndcertificatesVerification() {
+        return $('div.titleContainer > span.dashboard_heading');
+    }
+
     public async User(){
         await this.loggedInUserInitial().click();
         await browser.pause(1000)      
@@ -69,6 +77,14 @@ class WebTrendsAccountPage extends Page {
         await this.MyAccount().click();
         await this.MyAccountRoles().click();
         await expect(this.MyAccountRolesVerification()).toBeDisplayed();
+    }
+
+    public async awardsAndcertificates() {
+        await this.loggedInUserInitial().click();
+        await this.MyAccount().click();
+        await this.MyAccountawardAndcertificates().click();
+        await expect(this.MyAccountawardAndcertificatesVerification()).toBeDisplayed();
+
     }
 }
 

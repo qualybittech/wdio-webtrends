@@ -8,9 +8,9 @@ import webtrendsForgetpasswordPage from '../pageobjects/webtrends.forgetpassword
 import webtrendsVerificationPage from '../pageobjects/webtrends.verification.page.js';
 import webtrendsMyaccountPage from '../pageobjects/webtrends.myaccount.page.js';
 import webtrendsDashboardPage from '../pageobjects/webtrends.dashboard.page.js';
+import webtrendsExperience from '../pageobjects/webtrends.experience.page.js';
 
 Given('I am on the webtrends website home page', async () => {
-    await browser.deleteCookies();
     await WebTrendsLoginPage.appLaunch('/');
     await browser.maximizeWindow();
 });
@@ -86,9 +86,10 @@ Then('I check for navigation of my account options', async () => {
     await webtrendsMyaccountPage.AuditTrail();
     await webtrendsMyaccountPage.OverView();
     await webtrendsMyaccountPage.Roles();
+    await webtrendsMyaccountPage.awardsAndcertificates();
 });
 
-Then('I check for navigation of help', async () => {
+Then('I check for navigation of help and verify', async () => {
     await WebTrendsHomePage.navigateWebtrendsHelpVerify();
 });
 
@@ -111,29 +112,32 @@ Then('I check for dashboard experience overview', async () => {
     await WebTrendsHomePage.navigateWebtrendsLogoVerify();
     await webtrendsDashboardPage.webtrendsExperienceOverviewPublished();
 });
-
-Then('I check for dashboard Session usage', async () => {
+Then('I check for dashboard session usage', async () => {
     await webtrendsDashboardPage.webtrendsSession();
-});
-
-Then('I check for dashboard promotions', async () => {
-    await webtrendsDashboardPage.webtrendsPromption();
+    
 });
 
 Then('I check for dashboard experience chart', async () => {
     await webtrendsDashboardPage.webtrendsChart();
 });
 
-Then('I check for dashboard report', async () => {
+Then('I check for dashboard promotions', async () => {
+    await webtrendsDashboardPage.webtrendsPromotion();
+});
+Then('I check for Liveexperiences', async () => {
     await webtrendsDashboardPage.webtrendsReport();
+    
+});
+Then('I check for label', async () => {
+    await webtrendsDashboardPage.webtrendsLabels();
 });
 
 Then('I check for edit experience', async () => {
     await webtrendsDashboardPage.webtrendsEditExperience();
 });
 
-Then('I check for label', async () => {
-    await webtrendsDashboardPage.webtrendsLabels();
+Then('I check for editDashboard', async () => {
+    await webtrendsDashboardPage.webtrendsEditDashboard();
 });
 
 

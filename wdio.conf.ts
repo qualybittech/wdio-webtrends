@@ -2,7 +2,20 @@ import type { Options } from '@wdio/types'
 import cucumberJson from 'wdio-cucumberjs-json-reporter';
 import { generate } from 'multiple-cucumber-html-reporter'
 import fs from 'node:fs/promises'
+import { JSDOM } from "jsdom";
+import * as path from 'node:path';
+//import fs from 'fs';
+//import path from 'path';
 
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+//const base64 = fs.readFile(path.resolve(__dirname, './ve-extension-s34-base64.txt'), { encoding: 'utf-8' })
+let base64 : any;
+//const extensionBase64 = fs.readFileSync(path.resolve(__dirname, './wto7-extension-base64.txt'), { encoding: 'utf-8' });
+
+const extensionPath = path.join(__dirname, '.\\my-extension\\ve-extension-s34\\ve-extension-s34');
 
 let baseUrl;
 global.isRequired;
@@ -10,11 +23,11 @@ global.isRequired = 1       //it can be 1 for true or 0 for false
 let env = process.argv[6]
 
 switch (env) {
-  case 'staging':
+  case 'live':
     baseUrl = 'https://app.webtrends-optimize.com/auth/login';
     break;
 
-  case 'stagingalt':
+  case 'd1':
     baseUrl = 'https://app.dev-webtrends-optimize.com/auth/login';
     break;
 
@@ -84,9 +97,16 @@ export const config: Options.Testrunner = {
     // Sauce Labs platform configurator - a great tool to configure your capabilities:
     // https://saucelabs.com/platform/platform-configurator
     //
+    
     capabilities: [{
-        browserName: 'chrome'
-    }],
+        maxInstances: 1,
+        browserName: 'chrome',
+        'goog:chromeOptions': {
+          args: [`--load-extension=${extensionPath}`
+          ],
+          extensions: [],
+        }
+      }],
 
     //
     // ===================
@@ -168,7 +188,7 @@ export const config: Options.Testrunner = {
     // If you are using Cucumber you need to specify the location of your step definitions.
     cucumberOpts: {
         // <string[]> (file/dir) require files before executing features
-        require: ['./src/step-definitions/steps.ts'],
+        require: ['./src/step-definitions/**/*.ts'],
         // <boolean> show full backtrace for errors
         backtrace: false,
         // <string[]> ("extension:module") require files with the given EXTENSION after requiring MODULE (repeatable)
@@ -206,10 +226,29 @@ export const config: Options.Testrunner = {
      */
     // onPrepare: function (config, capabilities) {
     // },
-    onPrepare: () => {
-        // Remove the `.tmp/` folder that holds the json and report files
-        return fs.rm('.tmp/', { recursive: true });
-      },
+    onPrepare: async function (config, capabilities) {
+        // ✅ Clean the folder
+        await fs.rm('.tmp/', { recursive: true, force: true });
+
+        // ✅ Load the extension
+        //const base64 = await fs.readFile(path.resolve(__dirname, './wto7-extension-base64.txt'), { encoding: 'utf-8' });
+
+        switch (env) {
+        case 'live':
+            base64 = await fs.readFile(path.resolve(__dirname, './wto7-extension-live-base64.txt'), { encoding: 'utf-8' });
+            break;
+        case 'd1':
+            base64 = await fs.readFile(path.resolve(__dirname, './ve-extension-s34-base64.txt'), { encoding: 'utf-8' });
+            break;
+        default:
+            base64 = await fs.readFile(path.resolve(__dirname, './wto7-extension-base64.txt'), { encoding: 'utf-8' }); // default/staging
+            break;
+        }
+        console.log('✅ Cleaned .tmp/ and loaded extension into capabilities');
+    },
+
+    // ... other config ...
+
     /**
      * Gets executed before a worker process is spawned and can be used to initialise specific service
      * for that worker as well as modify runtime environments in an async fashion.
@@ -304,11 +343,14 @@ export const config: Options.Testrunner = {
     // },
     afterStep: async function (step, scenario, { error, duration, passed }, context) {
         if (error) {
-          //await browser.takeScreenshot();
+          const screenshot = await browser.takeScreenshot();
           // const screenshot = await browser.saveScreenshot('./output/' + Date.now() + '.png');
           //console.log('Screenshot path:', screenshot);
           await cucumberJson.attach('just a second string', 'text/plain');
-          await cucumberJson.attach(await browser.takeScreenshot(), 'image/png');
+          await cucumberJson.attach(await screenshot, 'image/png');
+        }else{
+          const screenshot = await browser.takeScreenshot();
+          await cucumberJson.attach(await screenshot, 'image/png');
         }
       },
     /**
@@ -368,7 +410,11 @@ export const config: Options.Testrunner = {
      */
     // onComplete: function(exitCode, config, capabilities, results) {
     // },
-    onComplete: () => {
+
+    onComplete: async () => {
+        //const reportError = new Error('Could not generate Allure report')
+        //const generation = allure(['generate', 'allure-results', '--clean'])
+      
         // Generate the report when it all tests are done
         generate({
           // Required
@@ -377,7 +423,20 @@ export const config: Options.Testrunner = {
           jsonDir: '.tmp/json/',
           reportPath: '.tmp/report/',
           // for more options see https://github.com/wswebcreation/multiple-cucumber-html-reporter#options
+          customData: {
+            title: 'Test Results',
+            data: [
+            { label: 'WebTrends Optimize', value: '<img src="https://c.webtrends-optimize.com/acs/accounts/82cb087b-998c-4b84-adea-c4c6f90d5d6f/manager/logo.jpg" width="100px" />' },
+            { label: 'Account', value: 'Live site & D1' },
+            { label: 'Project', value: 'Wedtrends UI automation' },
+            { label: 'Tester', value: 'Reema Singh' }, //Change the tester name
+            { label: 'Execution Time', value: new Date().toLocaleString() },
+            { label: 'Browsers', value: 'Chrome' },
+            { label: 'Test Framwork Used', value: 'WebdriverIO, Cucumber' },
+            { label: 'Operating System & Architecture', value: 'Windows 11, x64' }
+            ]},
         });
+        await processHtmlFile('.tmp/report');
       }
     /**
     * Gets executed when a refresh happens.
@@ -386,4 +445,204 @@ export const config: Options.Testrunner = {
     */
     // onReload: function(oldSessionId, newSessionId) {
     // }
+}
+
+async function processHtmlFile(dirReportPath: string): Promise<void> {
+
+    const dasboardHTML = dirReportPath+"/index.html";
+    // Read the HTML file 
+    const htmlContentDashboard =await fs.readFile(dasboardHTML, "utf-8");
+    const files = await fs.readdir(dirReportPath+"/features");
+
+    // Find the first HTML file (For scenarios report)
+    const htmlFile = files.find((file: string) => file.endsWith(".html"));
+
+    // Construct the full file path
+    const filePathFeature = path.join(dirReportPath+"/features", htmlFile);
+
+    // Read the HTML file
+    const htmlContentFeature = await fs.readFile(filePathFeature, "utf-8");
+
+    // Load the HTML content into jsdom
+    const domDashboard = new JSDOM(htmlContentDashboard);
+    const documentDashboard = domDashboard.window.document;
+
+    // Load the HTML content into jsdom
+    const domFeature = new JSDOM(htmlContentFeature);
+    const documentFeature = domFeature.window.document;
+
+    // Select the elements from the dashboard
+    const rowElementsDashboard = documentDashboard.querySelectorAll(".row");
+    const elementsDashboard = rowElementsDashboard[0].querySelectorAll(".col-lg-4.col-xs-12");
+    const sourceElementDashboard = elementsDashboard[2];
+    const targetElementDashboard = elementsDashboard[0];
+
+
+    //For Header
+    const containerFluidElementDashboard = documentDashboard.querySelector(".container-fluid");
+    //For Footer
+    const createdByElementDashboard = documentDashboard.querySelector(".created-by");
+
+    //Add Logo image to header
+    if (containerFluidElementDashboard) {
+
+      const imgWrapper = documentDashboard.createElement("div");
+      imgWrapper.style.textAlign = "center";
+
+        // Replace the <div class="container-fluid"> section with the <img> section
+        //const imgElement = documentDashboard.createElement("img");
+        //imgElement.src = "https://c.webtrends-optimize.com/acs/accounts/82cb087b-998c-4b84-adea-c4c6f90d5d6f/manager/logo.jpg";
+        //imgElement.width = 200;
+
+        //imgWrapper.appendChild(imgElement);
+        containerFluidElementDashboard.appendChild(imgWrapper);
+        
+
+        //containerFluidElementDashboard.replaceWith(imgElement);
+        // Write the updated HTML back to the file
+        console.log("Section replaced successfully.");
+        const navbarTextElements = containerFluidElementDashboard.querySelectorAll(".navbar-text");
+
+        navbarTextElements.forEach((element) => {
+            if (element.textContent.trim() === "Multiple Cucumber HTML Reporter") {
+                element.textContent = "Webtrends Optimize Test Automation Report"; // Replace text
+                console.log("Navbar text replaced successfully.");
+            }
+        });
+
+    } else {
+        console.error('<div class="container-fluid"> section not found.');
+    }
+
+    // Move the Custom tags section to Left side
+    if (sourceElementDashboard && targetElementDashboard && rowElementsDashboard[0]) {
+        // Move the source element above the target element
+        rowElementsDashboard[0].insertBefore(sourceElementDashboard, targetElementDashboard);
+        //console.log(rowElements[0]);
+        console.log("Section moved successfully.");
+    } else {
+        console.error("Source or target element not found.");
+    }
+
+    const footerCopyRightDiv = `<div style="background-color:#333; color:#ffffff; text-align:center; padding:20px; font-size:14px;">
+    <p>&copy; 2025 Webtrends Optimize</p>
+    <p>Accelarate Group Ltd t/a Webtrends Optimize</p>
+    </div>`;
+
+    // Update footer section with copyright notes
+      if (createdByElementDashboard) {
+        // Replace the createdByElementDashboard section with the footerCopyRightDiv
+        const footerDiv = documentDashboard.createElement("div");
+        footerDiv.innerHTML = footerCopyRightDiv;
+    
+        createdByElementDashboard.replaceWith(footerDiv);
+        console.log("Footer section replaced successfully.");
+    } else {
+        console.error('<div class="created-by"> section not found.');
+    }
+    // Write the updated HTML back to the file
+    await fs.writeFile(dasboardHTML, domDashboard.serialize(), "utf-8");
+
+    //*********Modifying the scenario html contents***********//
+
+    //Exract the chart function from the dashboard HTML
+    const scriptTags = documentDashboard.querySelectorAll("script");
+    let chartFunction = "";
+    scriptTags.forEach((script) => {
+      if (script.textContent?.includes('new Chart(document.getElementById("feature-chart")')) {
+        const match = script.textContent.match(/new Chart\(document\.getElementById\("feature-chart"\),[\s\S]*?\}\);/);
+               if (match) {
+              chartFunction = match[0];
+            }
+        }
+    });
+
+    // Append the additional script to the chartFunction
+    const additionalScript = `
+    var featureOptions = {
+        legend: false,
+        responsive: false
+    };
+    var getColor = function(selector, defaultColor) {
+        if (document.querySelector(selector)) {
+            return getComputedStyle(document.querySelector(selector)).color;
+        }
+        return defaultColor;
+    };`;
+
+  chartFunction = `${additionalScript}\n\n${chartFunction}`;
+
+    if (!chartFunction) {
+        console.error("Chart function not found in the source file.");
+        return;
+    }
+    
+    //console.log("Chart function extracted successfully."+chartFunction);
+
+    //Select the elements from the feature file                                                                                                   
+    const rowElementsFeature = documentFeature.querySelectorAll(".row");
+    const elementsFeature = rowElementsFeature[0];
+    const containerFluidElementFeature = documentFeature.querySelector(".container-fluid");
+    elementsFeature.replaceWith(rowElementsDashboard[0]);
+    const scriptTagsFeatures = documentFeature.querySelectorAll("script");
+    const createdByElementFeature = documentFeature.querySelector(".created-by");
+
+    // Append the chart function for Featureschart in scenarios html page
+            scriptTagsFeatures.forEach((script) => {
+              if (script.textContent?.includes("$(document).ready(function ()")) {
+                  // Append the chart function under the first $(document).ready(function ()
+                  script.textContent = script.textContent.replace(
+                      "$(document).ready(function () {",
+                      `$(document).ready(function () {\n\n${chartFunction}\n`
+                  );
+              }
+          });
+
+    // Copy the Dasboard contents to scenarios HTML
+    const pageTitleElement = documentFeature.querySelector(".page-title");
+
+if (pageTitleElement) {
+    pageTitleElement.style.display = "none"; // Hide the page title
+    console.log("Page title hidden successfully.");
+} else {
+    console.error('<div class="page-title"> section not found.');
+}
+
+    if (containerFluidElementFeature) {
+      // Replace the <div class="container-fluid"> section with the <img> section
+      //const imgElement = documentFeature.createElement("img");
+      //imgElement.src = "https://c.webtrends-optimize.com/acs/accounts/82cb087b-998c-4b84-adea-c4c6f90d5d6f/manager/logo.jpg";
+      //imgElement.width = 200;
+      //containerFluidElementFeature.appendChild(imgElement);
+      //containerFluidElementFeature.replaceWith(imgElement2);
+      // Write the updated HTML back to the file
+      // Find and hide the .page-title element
+
+
+      const navbarTextElements = containerFluidElementFeature.querySelectorAll(".navbar-text");
+
+        navbarTextElements.forEach((element) => {
+            if (element.textContent.trim() === "Multiple Cucumber HTML Reporter") {
+                element.textContent = "Webtrends Optimize Test Automation Report"; // Replace text
+                console.log("Navbar text replaced successfully.");
+            }
+        });
+
+    } else {
+        console.error('<div class="container-fluid"> section not found.');
+    }
+  
+  // Update copyrights to the footer section
+    if (createdByElementFeature) {
+      // Replace the createdByElementDashboard section with the footerCopyRightDiv
+      const footerDiv = documentFeature.createElement("div");
+      footerDiv.innerHTML = footerCopyRightDiv;
+
+      createdByElementFeature.replaceWith(footerDiv);
+      console.log("Footer section replaced successfully.");
+  } else {
+      console.error('<div class="created-by"> section not found.');
+  }
+
+    await fs.writeFile(filePathFeature, domFeature.serialize(), "utf-8");
 }

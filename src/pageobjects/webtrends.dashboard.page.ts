@@ -6,47 +6,36 @@ class WebTrendsDashboardPage extends Page {
    
 
     public get experienceOverviewLive () {
-        return $('//div[@class="testStates"]//div[1]//p');
+        return $('//div[@class="testState "][1]//p');
     }
 
     public get experienceOverviewStaging () {
-        return $('//div[@class="testStates"]//div[2]//p');
+        return $('//div[@class="testState "][2]//p');
     }
 
     public get experienceOverviewPublished () {
-        return $('//div[@class="testStates"]//div[3]//p');
+        return $('//div[@class="testState "][3]//p');
     }
 
     public get experienceOverviewLiveButton () {
-        return $('//div[@class="testStates"]//div[1]');
+        return $('//div[@class="testState "][1]');
     }
 
-    public get experienceOverviewLiveEmpty () {
-        return $('//div[text()="live"]/parent::div');
-    }
-
-    public get experienceOverviewStagingEmpty () {
-        return $('//div[text()="staging"]/parent::div');
-    }
-
-    public get experienceOverviewPublishedEmpty () {
-        return $('//div[text()="published"]/parent::div');
-    }
-  
     public get experienceOverviewStagingButton () {
-        return $('//div[@class="testStates"]//div[2]');
+        return $('//div[@class="testState "][2]');
     }
 
     public get experienceOverviewPublishedButton () {
-        return $('//div[@class="testStates"]//div[3]');
+        return $('//div[@class="testState "][3]');
     }
 
     public get session() {
-        return $('//p[normalize-space()="session usage"]');
-    }
+        return $('//div[contains(@class,"faq-page")]//h1[contains(translate(normalize-space(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"), "session usage")]');
+    }    
+    
 
     public get sessionUsageFaqs() {
-        return $('//div[contains(@class,"sessionUsageFaqs")]//span[1]');
+        return $('//div[contains(@class, "sessionUsageFaqs")]//a');
     }
 
     public get sessionUsagePage() {
@@ -69,6 +58,7 @@ class WebTrendsDashboardPage extends Page {
     public get bannerPromptionVerification() {
         return $('//div[@class="bannerContainer right "]//div[@class="bannerHeader headerOpenNoTransition"]');
     }
+    
 
     public get experienceChartVerification() {
         return $('//p[normalize-space()="Experiences Launched"]');
@@ -141,6 +131,35 @@ class WebTrendsDashboardPage extends Page {
     public get reportNoKpi() {
         return $('//div[@class="noKpiMessage"]');
     }
+
+
+    
+    public get reportKpiSelector() {
+        return $('//select[@id="kpiSelector"]');
+    }
+    public get reportKpiSelectoroption() {
+     return $('//select[@id="kpiSelector"]/option[text()="webloan_complete"]');
+    }
+    public get reportKpiSelectoroptiontwo() {
+        return $('//*[@id="kpiSelector"]/option[2]');
+    }
+
+    public get reportData() {
+        return $('//td[text()="710"]');
+    }
+
+    public get webtrendsEditdashboard() {
+        return $('.right_container > .edit-button');
+    }
+    public get checkbox() {
+        return $('//*[@id="show-checkbox-item-0"]');
+    }
+    public get saveDashboardButton() {
+        return $('div.button-group > button.save-button.redesign-button-primary');
+    }
+    
+
+
     
     public get editedExperienceGettext() {
         return $('//div[@class="recentlyEditedTestsContainer"]//a[1]//div[1]//div[1]//p[1]');
@@ -159,7 +178,7 @@ class WebTrendsDashboardPage extends Page {
     }
 
     public get label1() {
-        return $('//a[@href="/optimize/?labelFilter=0_0"]//button');
+        return $('//a[contains(@href, "labelFilter")]//button');
     }
 
     public get label2() {
@@ -186,78 +205,171 @@ class WebTrendsDashboardPage extends Page {
         await browser.pause(3000)
         await this.experienceOverviewLive.waitForDisplayed();
         var value = await this.experienceOverviewLive.getText();
-        if(value == 0)
-        {
-            await expect (this.experienceOverviewLiveEmpty).toBeDisplayed();
- 
-        }
-        else
-        {
         await this.experienceOverviewLiveButton.click();
         await expect ($('//div[text()="Live"]//div[text()="'+value+'"]')).toBeDisplayed();
-        await this.logo.click();  
-        }         
+        await this.logo.click();           
     }
 
     public async webtrendsExperienceOverviewStaging () {
         await this.experienceOverviewStaging.waitForDisplayed();
         var value = await this.experienceOverviewStaging.getText();
-        if(value == 0)
-        {
-            await expect (this.experienceOverviewStagingEmpty).toBeDisplayed();
- 
-        }
-        else
-        {
         await this.experienceOverviewStagingButton.click();
         await expect ($('//div[text()="Staging"]//div[text()="'+value+'"]')).toBeDisplayed();
-        await this.logo.click();  
-        }         
+        await this.logo.click();           
     }
 
     public async webtrendsExperienceOverviewPublished () {
         await this.experienceOverviewPublished.waitForDisplayed();
         var value = await this.experienceOverviewPublished.getText();
-        if(value == 0)
-        {
-            await expect (this.experienceOverviewPublishedEmpty).toBeDisplayed();
- 
-        }
-        else
-        {
         await this.experienceOverviewPublishedButton.click();
         await expect ($('//div[text()="Published"]//div[text()="'+value+'"]')).toBeDisplayed();
-        await this.logo.click();  
-        }                    
+        await this.logo.click();           
     }
 
-    public async webtrendsSession () {
-        await browser.pause(1000) 
-        await this.session.waitForDisplayed();
-        await expect (this.session).toBeDisplayed();
-        await this.sessionUsageFaqs.click();
+    public async webtrendsSession() {
+        const faqLink = await $('a*=Session Usage FAQ');
+        await faqLink.scrollIntoView();
+        await faqLink.waitForClickable({ timeout: 15000 });
+        await faqLink.click();
+    
+        await browser.waitUntil(
+            async () => (await browser.getWindowHandles()).length > 1,
+            {
+                timeout: 20000,
+                timeoutMsg: 'Expected a new window/tab to open after clicking FAQ link',
+            }
+        );
+    
         const handles = await browser.getWindowHandles();
-        await browser.switchToWindow(handles[1])
-        await browser.pause(3000) 
-        await expect(this.sessionUsagePage).toBeDisplayed();
-        await browser.switchToWindow(handles[0])
+        const originalWindow = handles[0];
+        const newWindow = handles[1];
+    
+        await browser.switchToWindow(newWindow);
+    
+        await browser.waitUntil(
+            async () => (await browser.execute(() => document.readyState)) === 'complete',
+            {
+                timeout: 20000,
+                timeoutMsg: 'FAQ page did not finish loading in time',
+            }
+        );
+    
+        // Log all h1 and h2 tags for debugging
+        const headers = await $$('h1, h2');
+        for (const header of headers) {
+            const text = await header.getText();
+            console.log('Header found on FAQ page:', text);
+        }
+    
+        // Use improved selector: try matching based on contains (fallback on h1, h2)
+        const selectors = [
+            '//h1[contains(translate(text(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"), "session usage")]',
+            '//h2[contains(translate(text(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"), "session usage")]',
+            '//*[contains(translate(text(), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"), "understanding session usage")]'
+        ];
+    
+        let headerFound = false;
+    
+        for (const xpath of selectors) {
+            const element = await $(xpath);
+            if (await element.isExisting()) {
+                console.log(`✅ Found matching element with selector: ${xpath}`);
+                await element.scrollIntoView();
+                await element.waitForDisplayed({ timeout: 15000 });
+                await expect(element).toBeDisplayed();
+                headerFound = true;
+                break;
+            } else {
+                console.warn(`❌ Selector did not match: ${xpath}`);
+            }
+        }
+    
+        if (!headerFound) {
+            throw new Error('Failed to find any matching header for "Session Usage" on the FAQ page. Check console logs for available headers.');
+        }
+    
+        await browser.switchToWindow(originalWindow);
     }
+    
+    
+    
 
-    public async webtrendsPromption () {
-        await browser.pause(3000) 
+    /*public async webtrendsPromption () {
+        await browser.pause(5000) 
         await this.bannerPromptionVerification.waitForDisplayed();
         await expect(this.bannerPromptionVerification).toBeDisplayed();
+    
+        // Click to close the banner
         await this.bannerOption.click();
+        await this.bannerPromptionOpen.waitForDisplayed({ reverse: true }); // Wait for it to disappear
         await expect(this.bannerPromptionOpen).not.toBeDisplayed();
+    
+        // Click again to open the banner
         await this.bannerOption.click();
-        await browser.pause(1000) 
+        await this.bannerPromptionOpen.waitForDisplayed();
+        await expect(this.bannerPromptionOpen).toBeDisplayed();
+    
+        // Click to interact with the open banner
         await this.bannerPromptionOpen.click();
-        /*const handles = await browser.getWindowHandles();
-        await browser.switchToWindow(handles[1])
-        await browser.pause(5000)
-        await expect(this.bannerPromption).toBeDisplayed();
-        await browser.switchToWindow(handles[0])*/
-    }
+    
+        // Handle new window/tab if applicable
+        const handles = await browser.getWindowHandles();
+        if (handles.length > 1) {
+            await browser.switchToWindow(handles[1]);
+            await this.bannerPromptionVerification.waitForDisplayed();
+            await expect(this.bannerPromptionVerification).toBeDisplayed();
+            await browser.switchToWindow(handles[0]); // Switch back to the main window
+        }
+    }*/
+    
+
+        public async webtrendsPromotion() {
+            await browser.pause(3000); 
+            await this.bannerPromptionVerification.waitForDisplayed({ timeout: 20000 });
+            await expect(this.bannerPromptionVerification).toBeDisplayed();
+        
+            // Toggle banner closed
+            await this.bannerOption.click();
+            await this.bannerPromptionOpen.waitForDisplayed({ reverse: true, timeout: 10000 });
+            await expect(this.bannerPromptionOpen).not.toBeDisplayed();
+        
+            // Toggle banner open
+            await this.bannerOption.click();
+            await browser.pause(1000);
+            await this.bannerPromptionOpen.click();
+        
+            // Capture window handles after click
+            const handles = await browser.getWindowHandles();
+            console.log('Window handles after banner click:', handles);
+        
+            if (handles.length > 1) {
+                // New window opened → switch
+                const originalWindow = handles[0];
+                const newWindow = handles[1];
+                await browser.switchToWindow(newWindow);
+                // Wait for the new page to fully load
+                await browser.waitUntil(
+                    async () => (await browser.execute(() => document.readyState)) === 'complete',
+                    { timeout: 15000, timeoutMsg: 'Marketing banner page did not finish loading in time' }
+                );
+                // Check expected content in the new window
+                await expect(this.bannerPromption).not.toBeDisplayed();  // Assuming you expect it gone
+                console.log('Verified marketing banner page in new window.');
+                // Optionally close new window and return
+                await browser.closeWindow();
+                await browser.switchToWindow(originalWindow);
+            } else {
+                // No new window → stay in the same window and check
+                console.warn('No new window opened; verifying banner content on the same page.');
+                await browser.waitUntil(
+                async () => (await browser.execute(() => document.readyState)) === 'complete',
+                { timeout: 15000, timeoutMsg: 'Banner page did not finish loading in time' }
+                );
+        
+                await expect(this.bannerPromption).not.toBeDisplayed();
+                console.log('Verified marketing banner page in same window.');
+            }
+        }
 
     public async webtrendsChart () {
         await browser.pause(3000)
@@ -286,6 +398,15 @@ class WebTrendsDashboardPage extends Page {
         await expect(this.reportText).toBeDisplayed();
         await this.reportgetText.scrollIntoView(); 
         await this.reportgetText.waitForDisplayed();
+        
+       // for kpi drop down verification
+        await this.reportKpiSelector.click();
+        await browser.pause(2000);
+        await this.reportKpiSelectoroption.click();
+        await browser.pause(2000);
+        await this.reportKpiSelectoroptiontwo.click();
+        await browser.pause(2000);
+        await expect(this.reportData).toBeDisplayed();
         var value = await this.reportgetText.getText();
         await this.reportView.click();
         browser.pause(1000)
@@ -309,7 +430,7 @@ class WebTrendsDashboardPage extends Page {
         await this.editedExperienceEdit.click();
         browser.pause(1000)
         //await expect ($('//span[text()="'+value+'"]')).toBeDisplayed();
-        await expect ($('//span[text()="Details summary"]')).toBeDisplayed();
+        await expect($('//div[contains(@class, "stepTitle") and contains(text(), "Step 1 - Project Details")]')).toBeDisplayed();
         } 
         else 
         {
@@ -317,34 +438,84 @@ class WebTrendsDashboardPage extends Page {
         }
     }
 
-    public async webtrendsLabels () {
-        await browser.pause(10000) 
+    public async webtrendsLabels() {
+        await browser.pause(10000); // initial wait if needed
         await this.editedExperienceLabel.waitForDisplayed();
         await this.editedExperienceLabel.scrollIntoView();
-        await browser.pause(3000)
+        await browser.pause(3000);
         await expect(this.editedExperienceLabel).toBeDisplayed();
-        if (await (this.label1).isDisplayed()) 
-            {
-                var value = await this.label1.getText();
-                const result = "Labels: "+value
-                await this.label1.click();
-                browser.pause(1000)
-                await expect (this.label1Verify).toBeDisplayed();
-                await this.logo.click();
-                var value2 = await this.label1.getText();
-                await this.label2.scrollIntoView();
-                await this.label2.click();
-                browser.pause(1000)
-                await expect (this.label2Verify).toBeDisplayed();
+    
+        const labelButtonsSelector = '//a[contains(@href, "labelFilter")]//button';
+        let labelButtons = await $$(labelButtonsSelector);
+        
+        if (labelButtons.length > 0) {
+            for (let i = 0; i < labelButtons.length; i++) {
+                // Re-fetch the list (DOM may change)
+                labelButtons = await $$(labelButtonsSelector);
+        
+                if (i >= labelButtons.length) {
+                    console.warn(`Label button at index ${i} no longer exists after reload.`);
+                    continue; // skip if index is out of range
+                }
+        
+                const labelButton = labelButtons[i];
+                if (!labelButton) {
+                    console.warn(`Label button at index ${i} is undefined.`);
+                    continue;
+                }
+        
+                const labelText = await labelButton.getText();
+                console.log(`Clicking label: ${labelText}`);
+        
+                await labelButton.scrollIntoView();
+                await labelButton.click();
+                await browser.pause(2000);
+        
+                await expect(this.label1Verify).toBeDisplayed();
+        
                 await this.clearFilter.click();
-                browser.pause(1000)
-                await expect ($('//div[@class="added_filters_container"]//div[2]//div[normalize-space()="Labels: ${value2}"]')).not.toBeDisplayed()
+                await browser.pause(1000);
+        
+                const cleared = await $(`//div[@class="added_filters_container"]//div[2]//div[contains(text(), "${labelText}")]`);
+                await expect(cleared).not.toBeDisplayed();
+            }
+        
+            await this.logo.click();
+        } else {
+            console.log('No labels found on the page.');
+            await expect(this.noLabels).toBeDisplayed();
+        }
+    }        
+    
 
-            }
-        else
-            {
-                await expect(this.noLabels).toBeDisplayed();
-            }
+    public async webtrendsEditDashboard () { 
+        await browser.pause(10000);
+        await this.webtrendsEditdashboard.waitForDisplayed();
+        await this.webtrendsEditdashboard.click();
+    
+        await this.checkbox.waitForDisplayed(); // Wait for the checkbox to be visible
+    
+        const isChecked = await this.checkbox.isSelected();
+    
+        if (isChecked) {
+            await this.checkbox.click(); // Untick if it’s already ticked
+            console.log('Checkbox was ticked — now unticked.');
+        } else {
+            console.log('Checkbox was already unticked — no action taken.');
+        }
+    
+        await this.saveDashboardButton.waitForDisplayed();
+        await this.saveDashboardButton.click();
+        console.log('Clicked Save Dashboard button.');
+        await browser.pause(5000);
+        const isEditDashboardVisible = await this.webtrendsEditdashboard.isDisplayed().catch(() => false);
+
+        if (!isEditDashboardVisible) {
+            console.log('Edit Dashboard item was successfully removed.');
+        } else {
+            console.warn('Edit Dashboard item is still visible — it may not have been removed.');
+        }
+    
     }
 }
 

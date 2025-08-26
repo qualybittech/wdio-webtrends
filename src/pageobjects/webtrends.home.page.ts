@@ -41,7 +41,7 @@ class WebTrendsHomePage extends Page {
     }
 
     public get assetsPage() {
-        return $('//h1[contains(text(),"Asset Manager")]');
+        return $('//div[@class="titleContainer"]/p[text()="Asset Manager"]');
     }
     
     public get locationsMenu() {
@@ -49,7 +49,8 @@ class WebTrendsHomePage extends Page {
     }
 
     public get locationsPage() {
-        return $('//h1[contains(text(),"Location Manager")]');
+        return $('//div[@class="titleContainer"]/p[text()="Location Manager"]');
+
     }
 
     public get segmentsMenu() {
@@ -65,7 +66,7 @@ class WebTrendsHomePage extends Page {
     }
 
     public get sitesPage() {
-        return $('//h1[contains(text(),"Site Manager")]');
+        return $('//div[@class="titleContainer"]/p[text()="Site Manager"]');
     }
 
     public get setupIntegrationSubMenu() {
@@ -113,6 +114,12 @@ class WebTrendsHomePage extends Page {
     public get automatedTrackingPage() {
         return $('//p[contains(text(),"Automated Tracking")]');
     }
+    public get customWidgetsMenu() {
+        return $('//a[contains(@href, "/optimize/customwidgets") and contains(text(), "Custom Widgets")]');
+    }
+    public get customWidgetsPage() {
+        return $('//div[@class="titleContainer"]/p[contains(text(), "Custom Widgets")]');
+    }
     public get logOut() {
         return $('//a[@href="/wam/api/logout"]');
     }
@@ -122,7 +129,7 @@ class WebTrendsHomePage extends Page {
     }
 
     public get helpVerification() {
-        return $('//h1[text()="Welcome to the Webtrends Optimize help centre"]');
+        return $('//h1[contains(text(), "Welcome to the Webtrends Optimize Help Centre")]');
     }
 
     public async navigateToMenu(menuname: string){
@@ -249,16 +256,35 @@ class WebTrendsHomePage extends Page {
         await this.automatedTrackingMenu.click();
         await browser.pause(1000);
         await expect(this.automatedTrackingPage).toBeDisplayed();
+
+        await this.configureMenu.moveTo();
+        await browser.pause(1000);
+        await this.setupIntegrationSubMenu.moveTo();
+        await this.customWidgetsMenu.click();
+        await expect(this.customWidgetsPage).toBeDisplayed();
+
+
     }
 
-    public async navigateWebtrendsHelpVerify(){
+    public async navigateWebtrendsHelpVerify() {
         await this.help.click();
-        const handles = await browser.getWindowHandles()
-        await browser.switchToWindow(handles[1])
-        await browser.pause(3000)
+        const originalTab = await browser.getWindowHandle();
+        await browser.waitUntil(async () => {
+            const handles = await browser.getWindowHandles();
+            return handles.length > 1;
+        }, {
+            timeout: 10000,
+            timeoutMsg: 'Expected a new tab to open after clicking Help link',
+        });
+        const allTabs = await browser.getWindowHandles();
+        const newTab = allTabs.find(tab => tab !== originalTab);
+        if (newTab) {
+            await browser.switchToWindow(newTab);
+        }
+        await this.helpVerification.waitForDisplayed({ timeout: 10000 });
         await expect(this.helpVerification).toBeDisplayed();
-        await browser.switchToWindow(handles[0])
-
+        await browser.closeWindow(); // Optional: close the help tab
+        await browser.switchToWindow(originalTab);
     }
 
     public async navigateWebtrendsLogoVerify(){
