@@ -75,7 +75,7 @@
     Given I am on the webtrends website home page
     When I login with webtrends <email>, <password>, <type>
     Then I should check switch account <account>
-    And I check for label
+    And I have checked for the label
 
     Examples:
       | email                         | password       | type  |username      |  account     |  
