@@ -132,7 +132,7 @@ Then('I check for edit experience', async () => {
     await webtrendsDashboardPage.webtrendsEditExperience();
 });
 
-Then('I check for label', async () => {
+Then('I have checked for the label', async () => {
     await webtrendsDashboardPage.webtrendsLabels();
 });
 
